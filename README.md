@@ -1,7 +1,6 @@
 # eLipa-C2B-API
 
 Zambia and Malawi sample REST API integration
-An end to end integration of the eLipa REST API.
 
 ## 👔 Features include:
 
