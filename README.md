@@ -11,7 +11,7 @@ Zambia and Malawi sample REST API integration
 
 - The first screen allows the user to input their details.
 
-<img src="https://github.com/thisgirlElan/eLipa-C2B-API/assets/61628746/e24e106f-f8ab-4c0b-a90d-54368e1e297f.jpeg " height="50%" width="70%"/>
+<img src="https://github.com/thisgirlElan/eLipa-C2B-API/assets/61628746/6c1e832d-36a8-4b01-98de-551bfe06376b.jpeg" height="50%" width="70%"/>
 
 
 - The payment gateway screen offers the user a selection of different channels they could opt to complete payment with.
