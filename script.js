@@ -36,13 +36,6 @@ document
     // Add the hash to the fields
     fields.hash = hash;
 
-    // Log the hash, data string, and payload
-    console.log(
-      `Hash: ${hash} ::: Data String: ${dataString} ::: Payload: ${JSON.stringify(
-        fields
-      )}`
-    );
-
     const submitButton = document.getElementById("submitButton");
     submitButton.innerText = "Loading...";
     submitButton.disabled = true;
@@ -72,10 +65,10 @@ function sendPayload(payload) {
         // Redirect the user to the redirect_url
         window.location.href = data.redirect_url;
       } else {
-        // Reset submit button text and enable it
+       
         submitButton.innerText = "Submit";
         submitButton.disabled = false;
-        // Handle other cases if needed
+        
         alert("Payment was not successful");
       }
     })
@@ -83,7 +76,7 @@ function sendPayload(payload) {
       console.error("Error sending payload:", error);
       alert("Error sending payload: " + error.message);
       const submitButton = document.getElementById("submitButton");
-      // Reset submit button text and enable it
+     
       submitButton.innerText = "Submit";
       submitButton.disabled = false;
     });
