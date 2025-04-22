@@ -1,83 +1,132 @@
-document
-  .getElementById("paymentForm")
-  .addEventListener("submit", function (event) {
-    event.preventDefault();
+document.getElementById("pgwButton").addEventListener("click", () => handleSubmit("gateway"));
+document.getElementById("vaButton").addEventListener("click", () => handleSubmit("virtualAccount"));
 
-    const formData = new FormData(event.target);
-    const fields = {};
+function handleSubmit(mode) {
+  const form = document.getElementById("paymentForm");
+  const formData = new FormData(form);
+  const fields = {};
 
-    formData.forEach(function (value, key) {
-      fields[key] = value;
-    });
-
-    // Define your fields
-    fields.currency = "MWK"; // "ZMW" for Zambia;
-    fields.reference = Math.random().toString(36).substring(7);
-    fields.vid = "demo";
-
-    // Sort the fields alphabetically by key
-    const sortedFields = Object.keys(fields)
-      .sort()
-      .reduce((obj, key) => {
-        obj[key] = fields[key];
-        return obj;
-      }, {});
-
-    // Convert the sorted fields to a URL-encoded query string
-    const dataString = new URLSearchParams(sortedFields).toString();
-
-    const hashKey = 'demo';
-
-    // Calculate the HMAC hash
-    const hash = CryptoJS.HmacSHA256(dataString, hashKey).toString(
-      CryptoJS.enc.Hex
-    );
-
-    // Add the hash to the fields
-    fields.hash = hash;
-
-    const submitButton = document.getElementById("submitButton");
-    submitButton.innerText = "Loading...";
-    submitButton.disabled = true;
-
-    // Send the payload to the server
-    sendPayload(fields);
+  formData.forEach((value, key) => {
+    fields[key] = value;
   });
 
-function sendPayload(payload) {
+  fields.currency = "NGN";
+  fields.reference = Math.random().toString(36).substring(2, 10);
+  fields.vid = "demo";
+
+  const sortedFields = Object.keys(fields).sort().reduce((obj, key) => {
+    obj[key] = fields[key];
+    return obj;
+  }, {});
+
+  const dataString = new URLSearchParams(sortedFields).toString();
+  const hashKey = "ipaykey"; // Replace with real key in production
+  fields.hash = CryptoJS.HmacSHA256(dataString, hashKey).toString(CryptoJS.enc.Hex);
+
+  const pgwButton = document.getElementById("pgwButton");
+  const vaButton = document.getElementById("vaButton");
+
+  if (mode === "virtualAccount") {
+    vaButton.innerText = "Loading VA...";
+    vaButton.disabled = true;
+  } else {
+    pgwButton.innerText = "Redirecting...";
+    pgwButton.disabled = true;
+  }
+
   fetch("http://localhost:3000/payment", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+    headers: { 
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json" 
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify(fields),
   })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
-    })
+    .then((response) => response.json())
     .then((data) => {
-      console.log("Server response:", data);
-      const submitButton = document.getElementById("submitButton");
-      if (data.status === 200 && data.text === "SUCCESS" && data.redirect_url) {
-        // Redirect the user to the redirect_url
-        window.location.href = data.redirect_url;
-      } else {
-       
-        submitButton.innerText = "Submit";
-        submitButton.disabled = false;
-        
-        alert("Payment was not successful");
+      if (mode === "gateway") {
+        if (data.status === 200 && data.text === "SUCCESS" && data.redirect_url) {
+          window.location.href = data.redirect_url;
+        } else {
+          pgwButton.innerText = "Pay with Gateway";
+          pgwButton.disabled = false;
+          alert("Payment was not successful");
+        }
+      } else if (mode === "virtualAccount") {
+        if (data.status === 200 && data.text === "SUCCESS" && data.sid) {
+          initiateBankTransfer(data.sid, fields.vid, hashKey);
+        } else {
+          vaButton.innerText = "Pay with Virtual Account";
+          vaButton.disabled = false;
+          alert("Payment was not successful");
+        }
       }
     })
     .catch((error) => {
-      console.error("Error sending payload:", error);
-      alert("Error sending payload: " + error.message);
-      const submitButton = document.getElementById("submitButton");
-     
-      submitButton.innerText = "Submit";
-      submitButton.disabled = false;
+      console.error("Error:", error);
+      pgwButton.innerText = "Pay with Gateway";
+      pgwButton.disabled = false;
+      vaButton.innerText = "Pay with Virtual Account";
+      vaButton.disabled = false;
+      alert("An error occurred: " + error.message);
     });
+}
+
+function initiateBankTransfer(sid, vid, hashKey) {
+  const fields = { sid, vid };
+  const sortedFields = Object.keys(fields).sort().reduce((obj, key) => {
+    obj[key] = fields[key];
+    return obj;
+  }, {});
+
+  const dataString = new URLSearchParams(sortedFields).toString();
+  fields.hash = CryptoJS.HmacSHA256(dataString, hashKey).toString(CryptoJS.enc.Hex);
+
+  fetch("http://localhost:3000/banktransfer", {
+    method: "POST",
+    headers: { 
+      "Access-Control-Allow-Origin": "*",
+      "Content-Type": "application/json" 
+    },
+    body: JSON.stringify(fields),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      const vaButton = document.getElementById("vaButton");
+
+      if (data.status === 200 && data.text === "SUCCESS" && data.result) {
+        const result = data.result;
+        console.log("result::::", result);
+        document.getElementById("va-account-name").textContent = result.account_name;
+        document.getElementById("va-bank-name").textContent = result.bank_name;
+        document.getElementById("va-account-number").textContent = result.account_number;
+        document.getElementById("va-amount").textContent = result.amount;
+        document.getElementById("va-modal").classList.remove("hidden");
+      } else {
+        alert("Could not retrieve virtual account details.");
+      }
+
+      vaButton.innerText = "Pay with Virtual Account";
+      vaButton.disabled = false;
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      alert("Error retrieving virtual account: " + error.message);
+      const vaButton = document.getElementById("vaButton");
+      vaButton.innerText = "Pay with Virtual Account";
+      vaButton.disabled = false;
+    });
+}
+
+function closeVAModal() {
+  document.getElementById("va-modal").classList.add("hidden");
+}
+
+function copyToClipboard(elementId) {
+  const text = document.getElementById(elementId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    alert("Copied to clipboard!");
+  }).catch((err) => {
+    console.error("Failed to copy text: ", err);
+  });
 }
