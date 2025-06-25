@@ -11,9 +11,9 @@ document
     });
 
     // Define your fields
-    fields.currency = "MWK"; // "ZMW" for Zambia;
+    fields.currency = "TZS";
     fields.reference = Math.random().toString(36).substring(7);
-    fields.vid = "demo";
+    fields.vid = "demo"; // => your actual vid
 
     // Sort the fields alphabetically by key
     const sortedFields = Object.keys(fields)
@@ -26,7 +26,7 @@ document
     // Convert the sorted fields to a URL-encoded query string
     const dataString = new URLSearchParams(sortedFields).toString();
 
-    const hashKey = 'demo';
+    const hashKey = 'demo'; // => your actual API key
 
     // Calculate the HMAC hash
     const hash = CryptoJS.HmacSHA256(dataString, hashKey).toString(
@@ -53,9 +53,11 @@ function sendPayload(payload) {
     body: JSON.stringify(payload),
   })
     .then((response) => {
+        console.log("response error:::", response);
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
+      // return response;
       return response.json();
     })
     .then((data) => {
@@ -81,3 +83,5 @@ function sendPayload(payload) {
       submitButton.disabled = false;
     });
 }
+
+
