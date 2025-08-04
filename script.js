@@ -103,7 +103,7 @@ function initiateBankTransfer(sid, vid, hashKey) {
         document.getElementById("va-amount").textContent = result.amount;
         document.getElementById("va-modal").classList.remove("hidden");
       } else {
-        alert("Could not retrieve virtual account details.");
+        alert("Could not retrieve virtual account details: " +  data.errormessage);
       }
 
       vaButton.innerText = "Pay with Virtual Account";
