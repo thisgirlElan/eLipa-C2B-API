@@ -5,52 +5,49 @@ Sample REST API integration
 ## 👔 Features include:
 
 - An interface for the user to key in details.
-- Payment gateway
+- Payment gateway payment option
+- Virtual Account payment option
 
 ## 📋 App Preview
 
-- The first screen allows the user to input their details.
+- The first screen allows the user to input their details and choose mode of payment i.e by generating a virtual account or paying via the eLipa Gateway.
 
-<img src="https://github.com/thisgirlElan/eLipa-C2B-API/assets/61628746/6c1e832d-36a8-4b01-98de-551bfe06376b.jpeg" height="50%" width="70%"/>
+<img width="70%" height="50%" alt="Screenshot 2025-08-04 235636" src="https://github.com/user-attachments/assets/48f2dd4b-40c0-45b6-8ce2-f1da00ebaff0" />
 
 
-- The payment gateway screen offers the user a selection of different channels they could opt to complete payment with.
+- The payment gateway screen offers the user the channel(s) they could opt to complete payment with and the necessary steps to complete payment.
+  
+<img width="70%" height="50%" alt="PGW Channels" src="https://github.com/user-attachments/assets/ec068b8b-d598-4bb7-9f94-d0fd5b24af31" />
 
-<img src="https://github.com/thisgirlElan/eLipa-C2B-API/assets/61628746/32128f8e-6e2c-45e0-a203-b74f06ceff81.jpeg" height="50%" width="70%"/>
+<img width="70%" height="50%" alt="PGW Steps" src="https://github.com/user-attachments/assets/25270ae3-7c6b-4879-a323-6f7b6a986afd" />
 
- Clone this repo:
 
- 
+- For virtual account payment, they simply generate the account and use the details to make payment. (You might need to customize a guide for clients to complete payment)
+  
+<img width="70%" height="50%" alt="virtual account" src="https://github.com/user-attachments/assets/cc89e0af-0644-405f-9c35-91b0e89c8b58" />
+
+
+
+Clone this repo:
 ```
-
 git clone https://github.com/thisgirlElan/eLipa-C2B-API.git
-
 ```
 
- Import dependencies 
-
+Import dependencies 
 - With npm
-
 ```
-
 npm install
-
 ```
 
- Start express server
-
+Start express server
 - With node
-
 ```
-
 node express.js
-
 ```
 
 When the server is up and running, open the `index.html` file on your browser.
 
 ### Good to Know
-
 - The integration uses a simple HTML form for user input
 - Scripting has been done with JS to fetch and send data to the server for rendering.
 - Express.js has been utilized for server side rendering.
