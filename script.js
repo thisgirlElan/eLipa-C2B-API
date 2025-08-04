@@ -50,7 +50,7 @@ function handleSubmit(mode) {
         } else {
           pgwButton.innerText = "Pay with Gateway";
           pgwButton.disabled = false;
-          alert("Payment was not successful");
+          alert("An error occurred: " + data.errormessage);
         }
       } else if (mode === "virtualAccount") {
         if (data.status === 200 && data.text === "SUCCESS" && data.sid) {
@@ -58,7 +58,7 @@ function handleSubmit(mode) {
         } else {
           vaButton.innerText = "Pay with Virtual Account";
           vaButton.disabled = false;
-          alert("Payment was not successful");
+          alert("An error occurred: " + data.errormessage);
         }
       }
     })
