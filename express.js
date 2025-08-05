@@ -5,8 +5,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const nigeriaGateway = 'https://apis.elipa.global/payments/v2/payin/session/create/ng';
-// const bankTransferHabari = 'https://apis.elipa.global/payments/v2/payin/mobilebanking/initiate/ng/banktransferngh';
-const bankTransferPayaza = 'https://apis.elipa.global/payments/v2/payin/mobilebanking/initiate/ng/banktransferngp';
+const bankTransfer = 'https://apis.elipa.global/payments/v2/payin/mobilebanking/initiate/ng/banktransferngh';
 
 app.use(cors());
 app.use(bodyParser.json()); 
@@ -32,7 +31,7 @@ app.post('/payment', async (req, res) => {
 
 app.post('/banktransfer', async (req, res) => {
     try {
-        const response = await fetch(bankTransferPayaza, {
+        const response = await fetch(bankTransfer, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
