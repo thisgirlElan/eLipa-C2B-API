@@ -11,7 +11,7 @@ document
     });
 
     // Define your fields
-    fields.currency = "MWK"; // "ZMW" for Zambia;
+    fields.currency = "UGX";
     fields.reference = Math.random().toString(36).substring(7);
     fields.vid = "demo";
 
