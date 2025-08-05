@@ -4,15 +4,14 @@ const bodyParser = require('body-parser');
 
 const app = express();
 
-const malawiGateway = 'https://apis.staging.elipa.global/payments/v2/payin/session/create/mw';
-const zambiaGateway = 'https://apis.staging.elipa.global/payments/v2/payin/session/create/zm';
+const ugandaGateway = 'https://apis.staging.elipa.global/payments/v2/payin/session/create/ug';
 
 app.use(cors());
 app.use(bodyParser.json()); 
 
 app.post('/payment', async (req, res) => {
     try {
-        const response = await fetch(malawiGateway, {
+        const response = await fetch(ugandaGateway, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
