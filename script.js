@@ -23,6 +23,8 @@ function handleSubmit(mode) {
   const hashKey = "ipaykey"; // Replace with real key in production
   fields.hash = CryptoJS.HmacSHA256(dataString, hashKey).toString(CryptoJS.enc.Hex);
 
+  console.log("datastring:::", dataString);
+
   const pgwButton = document.getElementById("pgwButton");
   const vaButton = document.getElementById("vaButton");
 
@@ -45,12 +47,14 @@ function handleSubmit(mode) {
     .then((response) => response.json())
     .then((data) => {
       if (mode === "gateway") {
+        // console.log("data", console.log("data", JSON.stringify(data, null, 2)));
+        
         if (data.status === 200 && data.text === "SUCCESS" && data.redirect_url) {
           window.location.href = data.redirect_url;
         } else {
           pgwButton.innerText = "Pay with Gateway";
           pgwButton.disabled = false;
-          alert("Payment was not successful");
+          alert("An error occurred: " + data.errormessage);
         }
       } else if (mode === "virtualAccount") {
         if (data.status === 200 && data.text === "SUCCESS" && data.sid) {
@@ -58,7 +62,7 @@ function handleSubmit(mode) {
         } else {
           vaButton.innerText = "Pay with Virtual Account";
           vaButton.disabled = false;
-          alert("Payment was not successful");
+          alert("An error occurred: " + data.errormessage);
         }
       }
     })
@@ -93,6 +97,8 @@ function initiateBankTransfer(sid, vid, hashKey) {
     .then((response) => response.json())
     .then((data) => {
       const vaButton = document.getElementById("vaButton");
+      console.log("data: ", data);
+      
 
       if (data.status === 200 && data.text === "SUCCESS" && data.result) {
         const result = data.result;
@@ -103,7 +109,7 @@ function initiateBankTransfer(sid, vid, hashKey) {
         document.getElementById("va-amount").textContent = result.amount;
         document.getElementById("va-modal").classList.remove("hidden");
       } else {
-        alert("Could not retrieve virtual account details.");
+        alert("Could not retrieve virtual account details: " +  data.errormessage);
       }
 
       vaButton.innerText = "Pay with Virtual Account";
